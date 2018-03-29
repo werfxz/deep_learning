@@ -2,22 +2,26 @@ from mnistdata import mnist
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import sklearn.preprocessing
 #from NeuralNet import NeuralNet
 
 def readData(mode="training"):
 	# Reading Data
-	foldername = os.path.join(os.path.realpath(''), 'data')
-
-	mndata = mnist.MNIST(foldername)
-	if mode == "training":
-		images, labels = mndata.load_training()
-	elif mode == "test":
-		images, labels = mndata.load_testing()
-	else:
-		print (" Data not read.")
-		images, labels = None
-	print ("MNIST handwritten digit data is read.")
-	return np.array(images), np.array(labels)
+    	foldername = os.path.join(os.path.realpath(''), 'mnistdata/data')
+    
+    	mndata = mnist.MNIST(foldername)
+    	if mode == "training":
+    		images, labels = mndata.load_training()
+    	elif mode == "test":
+    		images, labels = mndata.load_testing()
+    	else:
+    		print (" Data not read.")
+    		images, labels = None
+    	print ("MNIST handwritten digit data is read.")
+    	label_binarizer = sklearn.preprocessing.LabelBinarizer()
+    	label_binarizer.fit(range(max(labels)+1))
+    	labels = label_binarizer.transform(np.array(labels)).T
+    	return np.array(images), np.array(labels)
 
 
 X_train, y_train = readData(mode="training")

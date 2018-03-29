@@ -16,7 +16,7 @@ class NeuralNet:
         w0 = np.random.rand(hidden_size, input_size)
         w0 = np.random.rand(hidden_size, num_classes)
         return w0, w1
-
+    
 	def calculateL2(self, w0, w1):
 		# L2 Regularization loss
         L2 = np.sum(np.square(wo)) + np.sum(np.square(w1))
@@ -24,9 +24,12 @@ class NeuralNet:
 	def relu(self, neurons):
 	     # determines the activations of a ReLU when input is given
         activation_neurons = np.maximum(neurons, 0)
+        
 	def softmax(self, neurons, y):
 	     # computes normalized probabilities and loss when labels(y) are given
-        class_probs = np.exp(neurons) / np.sum(np.exp(neurons)) #normalized probabilities
+        class_probs = np.exp(neurons) / np.sum(np.exp(neurons))
+        loss = -1 * np.sum(np.log(np.multiply(neurons, y)))
+        
         
 	def forwardPass(self, X, w0, w1, b0, b1, y=None, training=True):
 		#forward propagation and loss computation
