@@ -14,7 +14,7 @@ class NeuralNet:
 		# Initializing random weights w1
 		#there are hidden_size*num_classes number of weights in the first layer
         w0 = np.random.rand(hidden_size, input_size)
-        w0 = np.random.rand(hidden_size, num_classes)
+        w1 = np.random.rand(num_classes, hidden_size)
         return w0, w1
     
 	def calculateL2(self, w0, w1):
@@ -29,11 +29,15 @@ class NeuralNet:
 	     # computes normalized probabilities and loss when labels(y) are given
         class_probs = np.exp(neurons) / np.sum(np.exp(neurons))
         loss = -1 * np.sum(np.log(np.multiply(neurons, y)))
-        
+        return class_probs, loss
         
 	def forwardPass(self, X, w0, w1, b0, b1, y=None, training=True):
 		#forward propagation and loss computation
-                
+        z1 = np.dot(X, w0) + b0
+        a1 = relu(z1)
+        z2 = np.dot(a1, w1) + b1
+        class_probs, loss = self.softmax(z2, y) # y yi burda nasıl vercez? 
+        
 	def predict(self, X):
 		# Given some data X, predict the class per each sample
     

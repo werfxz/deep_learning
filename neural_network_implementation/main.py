@@ -3,7 +3,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import sklearn.preprocessing
-#from NeuralNet import NeuralNet
+from NeuralNet import NeuralNet
 
 def readData(mode="training"):
 	# Reading Data
