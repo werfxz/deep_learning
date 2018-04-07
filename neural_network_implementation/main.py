@@ -33,10 +33,10 @@ num_classes = 10
 #reg:regularization strength 
 #lr:learning rate 
 reg=0.001
-lr=1e-3
+lr=1e-4
 #batch_size is the number of samples in each batch
 #num_epoch denotes how many times training goes over whole training set
-num_epoch=10
+num_epoch=200
 batch_size=100
 # Initialize the network
 net = NeuralNet(input_size, hidden_size, num_classes, reg, lr)

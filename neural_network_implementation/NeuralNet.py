@@ -14,13 +14,13 @@ class NeuralNet:
         # Initializing random weights w1
         #there are hidden_size*num_classes number of weights in the first layer
        
-        w1 = np.random.rand(hidden_size, input_size) * 0.001
+        w1 = np.random.rand(hidden_size, input_size) * 0.01
         b1 = np.zeros(shape=(hidden_size, 1))
-        w2 = np.random.rand(num_classes, hidden_size) * 0.001
+        w2 = np.random.rand(num_classes, hidden_size) * 0.01
         b2 = np.zeros(shape=(num_classes, 1))
         parameters = {"w1":w1,
-                      "w2":w2,
                       "b1":b1,
+                      "w2":w2, 
                       "b2":b2}
         return parameters
     
@@ -33,13 +33,13 @@ class NeuralNet:
         # determines the activations of a ReLU when input is given
         return np.maximum(neurons, 0)
 
-    def relu_derivative(self, x):
+    def relu_derivative(self, neurons):
         #calculates the derivate of relu activation
-        return np.multiply(1*(x > 0),x)
+        return np.multiply(1*(neurons > 0),neurons)
         
     def softmax(self, neurons):
-         # computes normalized probabilities and loss when labels(y) are given
-        class_probs = np.exp(neurons) / np.sum(np.exp(neurons))
+         # computes normalized probabilities 
+        class_probs = np.exp(neurons) / np.sum(np.exp(neurons), axis = 0)
         
         return class_probs
         
@@ -54,11 +54,11 @@ class NeuralNet:
         a1 = self.relu(z1)
         z2 = np.dot(w2, a1) + b2
         class_probs = self.softmax(z2)
+#        print(class_probs.shape, z2.shape)
         cache = {"z1":z1,
                  "a1":a1,
                  "z2":z2,
-                 "a2":class_probs
-                }
+                 "a2":class_probs}
         
         return class_probs, cache
     
@@ -127,14 +127,17 @@ class NeuralNet:
         for j in range(num_epoch):
             for i in range(int(m/batch_size)):
                 #forwardPass
-                class_probs, cache = self.forwardPass(X_train[:,(i*batch_size)+1:(i+1)*batch_size],parameters)
+                class_probs, cache = self.forwardPass(X_train[:,(i*batch_size)+1:(i+1)*batch_size], parameters)
                 #computeCost
                 cost = self.computeCost(class_probs, Y_train[:,(i*batch_size)+1:(i+1)*batch_size])
                 #backProp
                 grads = self.backProp(parameters, cache, X_train[:,(i*batch_size)+1:(i+1)*batch_size], Y_train[:,(i*batch_size)+1:(i+1)*batch_size])
                 #weightUpdate
                 parameters = self.update_parameters(parameters, grads, self.learning_rate)
+               
+                np.set_printoptions(suppress=True)
+                
             errorbyepoch = cost
-            print(class_probs.shape, Y_train[:,(i*batch_size)+1:(i+1)*batch_size].shape)
+            print(errorbyepoch)
             
         return errorbyepoch
