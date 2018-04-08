@@ -1,4 +1,5 @@
 import numpy as np
+from math import sqrt
 class NeuralNet:
 
     def __init__(self, input_size, hidden_size, num_classes, reg, learning_rate):
@@ -14,9 +15,9 @@ class NeuralNet:
         # Initializing random weights w1
         #there are hidden_size*num_classes number of weights in the first layer
        
-        w1 = np.random.rand(hidden_size, input_size) * 0.01
+        w1 = np.random.rand(hidden_size, input_size) / sqrt(input_size)
         b1 = np.zeros(shape=(hidden_size, 1))
-        w2 = np.random.rand(num_classes, hidden_size) * 0.01
+        w2 = np.random.rand(num_classes, hidden_size) / sqrt(hidden_size)
         b2 = np.zeros(shape=(num_classes, 1))
         parameters = {"w1":w1,
                       "b1":b1,
@@ -44,17 +45,20 @@ class NeuralNet:
         return class_probs
         
     def forwardPass(self, X, parameters):
-        #forward propagation and loss computation
+        #retrieving network parameters
         w1 = parameters['w1']
         b1 = parameters['b1']
         w2 = parameters['w2']
         b2 = parameters['b2']
-        
+        #data preprocessing
+        X = X - np.mean(X, axis = 0)
+        X = X / np.std(X, axis = 0)
+        #forward propagation       
         z1 = np.dot(w1, X) + b1
         a1 = self.relu(z1)
         z2 = np.dot(w2, a1) + b2
         class_probs = self.softmax(z2)
-#        print(class_probs.shape, z2.shape)
+        #cache the values of forward propagation for backpropagation
         cache = {"z1":z1,
                  "a1":a1,
                  "z2":z2,
@@ -68,21 +72,21 @@ class NeuralNet:
         
         return cost
     
-    def predict(self, X, w1, w2, b1, b2, threshold):
+    def predict(self, X, parameters):
         # Given some data X, predict the class per each sample
-        class_probs, cache = self.forwardPass(X, w1, w2, b1, b2)
+        class_probs, cache = self.forwardPass(X, parameters)
         #convert class probabilities to 0 or 1 by threshold
-        class_probs = (class_probs > threshold)
-       
+        class_probs = np.argmax(class_probs, axis = 0)
+        
         return class_probs
         
     def backProp(self, parameters, cache, X, Y):    
-        #backpropagate the loss
         m = X.shape[1]
+        #retrieve the cache values
         a1 = cache['a1']
         a2 = cache['a2']
         w2 = parameters['w2']
-        
+        #backpropagate the loss
         dz2 = a2 - Y
         dw2 = (1 / m) * np.dot(dz2, a1.T)
         db2 = (1 / m) * np.sum(dz2, axis=1, keepdims=True)
@@ -134,10 +138,8 @@ class NeuralNet:
                 grads = self.backProp(parameters, cache, X_train[:,(i*batch_size)+1:(i+1)*batch_size], Y_train[:,(i*batch_size)+1:(i+1)*batch_size])
                 #weightUpdate
                 parameters = self.update_parameters(parameters, grads, self.learning_rate)
-               
-                np.set_printoptions(suppress=True)
-                
+                  
             errorbyepoch = cost
             print(errorbyepoch)
             
-        return errorbyepoch
+        return errorbyepoch, parameters

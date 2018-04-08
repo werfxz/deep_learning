@@ -33,23 +33,25 @@ num_classes = 10
 #reg:regularization strength 
 #lr:learning rate 
 reg=0.001
-lr=1e-4
+lr=1e-3
 #batch_size is the number of samples in each batch
 #num_epoch denotes how many times training goes over whole training set
-num_epoch=200
+num_epoch=20
 batch_size=100
 # Initialize the network
 net = NeuralNet(input_size, hidden_size, num_classes, reg, lr)
 # Train the network using batches of data.
 # stats keeps the amount of error at each epoch
-errorbyepoch = net.train(X_train, y_train, num_epoch, batch_size)
+errorbyepoch, parameters = net.train(X_train, y_train, num_epoch, batch_size)
 # Predict on the test
 
+y_train = np.argmax(y_train, axis=0)
+y_test = np.argmax(y_test, axis=0)
 
-#train_acc = (net.predict(X_train) == y_train).mean()
-#print ('Train accuracy: ', train_acc)
-#test_acc = (net.predict(X_test) == y_test).mean()
-#print ('Test accuracy: ', test_acc)
+train_acc = (net.predict(X_train, parameters) == y_train).mean()
+print ('Train accuracy: ', train_acc)
+test_acc = (net.predict(X_test, parameters) == y_test).mean()
+print ('Test accuracy: ', test_acc)
 
 
 
