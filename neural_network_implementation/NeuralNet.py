@@ -127,7 +127,7 @@ class NeuralNet:
     def train(self, X_train, Y_train, num_epoch, batch_size):
         parameters = self.initializeWeights(self.input_size, self.hidden_size, self.num_classes)
         m = X_train.shape[1]
-        
+        errorbyepoch = np.zeros((num_epoch))
         for j in range(num_epoch):
             for i in range(int(m/batch_size)):
                 #forwardPass
@@ -139,7 +139,5 @@ class NeuralNet:
                 #weightUpdate
                 parameters = self.update_parameters(parameters, grads, self.learning_rate)
                   
-            errorbyepoch = cost
-            print(errorbyepoch)
-            
+            errorbyepoch[j] = cost            
         return errorbyepoch, parameters

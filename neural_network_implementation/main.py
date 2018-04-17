@@ -28,16 +28,16 @@ X_train, y_train = readData(mode="training")
 X_test, y_test = readData(mode="test")
 #number of neurons in each layer
 input_size = 28 * 28 * 1
-hidden_size = 30
+hidden_size = 50
 num_classes = 10
 #reg:regularization strength 
 #lr:learning rate 
 reg=0.001
-lr=1e-3
+lr=1e-4
 #batch_size is the number of samples in each batch
 #num_epoch denotes how many times training goes over whole training set
 num_epoch=20
-batch_size=100
+batch_size=60
 # Initialize the network
 net = NeuralNet(input_size, hidden_size, num_classes, reg, lr)
 # Train the network using batches of data.
@@ -58,8 +58,8 @@ print ('Test accuracy: ', test_acc)
 # Plot the points using matplotlib
 
 
-#x = np.arange(0, num_epoch, 1)
-#plt.plot(x, errorbyepoch)
+x = np.arange(0, num_epoch, 1)
+plt.plot(x, errorbyepoch)
 
 
  
